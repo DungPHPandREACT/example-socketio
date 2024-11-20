@@ -7,20 +7,23 @@
 		<script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
 	</head>
 	<body>
-		<h1>Chat Application</h1>
-		<div>
-			<input id="room" type="text" placeholder="Nhập số phòng" />
-			<button id="joinRoom">Tham gia phòng</button>
-		</div>
-		<div>
-			<input id="message" type="text" placeholder="Nhập thông điệp" />
-			<button id="sendMessage">Gửi tin nhắn</button>
-		</div>
-		<div>
-			<p><strong>Messages: </strong></p>
-			<div id="messages"></div>
-		</div>
-		<div id="typingIndicator"></div>
+		<h1>Realtime Product CRUD</h1>
+
+		<form id="product-form">
+			<h3>Create Product</h3>
+			<input type="text" id="name" placeholder="Nhập tên sản phẩm..." />
+			<input
+				type="text"
+				id="description"
+				placeholder="Nhập mô tả sản phẩm..."
+			/>
+			<input type="number" id="price" placeholder="Nhập giá sản phẩm..." />
+			<input type="number" id="stock" placeholder="Nhập số lượng sản phẩm..." />
+			<button type="submit">Tạo sản phẩm</button>
+		</form>
+
+		<h3>Danh sách sản phẩm</h3>
+		<ul id="product-list"></ul>
 
 		<script type="module" src="./main.js"></script>
 	</body>
