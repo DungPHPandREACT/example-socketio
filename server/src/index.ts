@@ -26,6 +26,16 @@ io.on('connection',  (socket: Socket) =>{
         socket.to(room).emit('message', `Người dùng ${socket.id} đã rời phòng`)
     })
 
+    socket.on('typing', (room: string) => {
+        console.log(`${socket.id} đang gõ trong phòng ${room}`);
+        socket.to(room).emit('typing', `${socket.id} đang gõ...`)
+    })
+
+    socket.on('stopTyping', (room: string) => {
+        console.log(`${socket.id} đã dừng gõ trong phòng ${room}`);
+        socket.to(room).emit('stopTyping', `${socket.id} đã dừng gõ...`)
+    })
+
     socket.on('message', (room: string, message: string) => {
         console.log(`Tin nhắn từ phòng ${room}: ${message}`);
         io.to(room).emit('message', `${socket.id}: ${message}`)

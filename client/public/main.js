@@ -3,55 +3,54 @@ const socket = io('http://localhost:3001', {
 });
 
 let currentRoom = '';
+let typingTimeout;
 
-socket.on('connect', () => {
-	console.log(`Kết nối thành công với ID: ${socket.id}`);
-});
+const roomInput = document.getElementById('room');
+const btnJoinRoom = document.getElementById('joinRoom');
+const messageInput = document.getElementById('message');
+const btnSendMessage = document.getElementById('sendMessage');
+const messageDiv = document.getElementById('messages');
+const typingIndicator = document.getElementById('typingIndicator');
 
-const writMessage = (message) => {
-	const li = document.createElement('li');
-	li.textContent = message;
-	document.getElementById('messages').appendChild(li);
+btnJoinRoom.onclick = () => {
+	const room = roomInput.value.trim();
+	if (room) {
+		currentRoom = room;
+		socket.emit('joinRoom', room);
+		messageDiv.innerHTML = `<strong>Bạn đã tham gia phòng: ${room}</strong>`;
+	}
+};
+
+btnSendMessage.onclick = () => {
+	const message = messageInput.value.trim();
+	if (message && currentRoom) {
+		socket.emit('message', currentRoom, message);
+		messageDiv.innerHTML = `<strong>Bạn: ${message}/strong>`;
+		messageInput.value = '';
+		socket.emit('stopTyping', currentRoom);
+	}
+};
+
+messageInput.oninput = () => {
+	if (currentRoom) {
+		socket.emit('typing', currentRoom);
+
+		clearTimeout(typingTimeout);
+
+		timeoutTyping = setTimeout(() => {
+			socket.emit('stopTyping', currentRoom);
+		}, 2000);
+	}
 };
 
 socket.on('message', (message) => {
-	console.log(`Tin nhắn từ server: ${message}`);
-	writMessage(message);
+	messageDiv.innerHTML += `<p>${message}</p>`;
 });
 
-const leaveRoom = () => {
-	if (currentRoom) {
-		socket.emit('leaveRoom', currentRoom);
-		const message = `Đang rời phòng ${currentRoom}`;
-		writMessage(message);
-		currentRoom = '';
-	}
-};
+socket.on('typing', (user) => {
+	typingIndicator.innerHTML = `<strong>${user} đang gõ...</strong>`;
+});
 
-document.getElementById('leave').onclick = leaveRoom;
-
-document.getElementById('join').onclick = () => {
-	const room = document.getElementById('room').value;
-	if (room) {
-		if (currentRoom) {
-			leaveRoom();
-		}
-
-		socket.emit('joinRoom', room);
-		currentRoom = room;
-		document.getElementById('messages').innerHTML = '';
-		const message = `Bạn đã tham gia phòng ${room}`;
-		writMessage(message);
-	}
-};
-
-document.getElementById('send').onclick = () => {
-	const value = document.getElementById('message').value;
-	if (value && currentRoom) {
-		socket.emit('message', currentRoom, value);
-		const message = `Bạn: ${value}`;
-		writMessage(message);
-	} else if (!currentRoom) {
-		alert('Bạn cần tham gia một phòng trước');
-	}
-};
+socket.on('stopTyping', () => {
+	typingIndicator.innerHTML = '';
+});

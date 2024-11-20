@@ -7,14 +7,20 @@
 		<script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
 	</head>
 	<body>
-		<h1>Chat Rooms</h1>
-		<input id="room" type="text" placeholder="Nhập tên phòng" />
-		<button id="join">Tham gia phòng</button>
-		<button id="leave">Rời phòng</button>
-		<br />
-		<input id="message" type="text" placeholder="Nhập tin nhắn" />
-		<button id="send">Gửi</button>
-		<ul id="messages"></ul>
+		<h1>Chat Application</h1>
+		<div>
+			<input id="room" type="text" placeholder="Nhập số phòng" />
+			<button id="joinRoom">Tham gia phòng</button>
+		</div>
+		<div>
+			<input id="message" type="text" placeholder="Nhập thông điệp" />
+			<button id="sendMessage">Gửi tin nhắn</button>
+		</div>
+		<div>
+			<p><strong>Messages: </strong></p>
+			<div id="messages"></div>
+		</div>
+		<div id="typingIndicator"></div>
 
 		<script type="module" src="./main.js"></script>
 	</body>
